@@ -16,6 +16,9 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="login(ruleForm)">登录</el-button>
                 </div>
+                <div class="register-btn">
+                    <el-button type="primary" @click="register(ruleForm)">注册</el-button>
+                </div>
             </el-form>
         </div>
     </div>
@@ -74,6 +77,36 @@
                 }).catch((err) => {
                     console.log("error:"+err)
                 });
+            },
+            register(form){
+                console.log(form.username+form.password);
+                axios.post('/aop/user/register'
+                ,{
+                        username:form.username,
+                        password:form.password,
+                }
+                ).then((result) => {
+                        console.log(result.data);
+                        if(result.data.id!=null){
+                            if(result.data.username.length > 5){
+                                localStorage.setItem('ms_username',this.ruleForm.username);
+                                localStorage.setItem('userid',result.data.id);
+                                localStorage.setItem('username',result.data.username);
+                                localStorage.setItem('password',result.data.password);
+                                this.$router.push('/');
+                                this.$message('注册完成！');
+                            }
+                            else{
+                                this.$message('用户名少于5个字符！');
+                            }
+                        }else{
+                            this.$message('账号已存在！');
+                        }
+                        
+
+                }).catch((err) => {
+                    console.log("error:"+err)
+                });
             }
         }
     }
@@ -112,6 +145,14 @@
         text-align: center;
     }
     .login-btn button{
+        width:100%;
+        height:36px;
+        margin-bottom: 10px;
+    }
+    .register-btn{
+        text-align: center;
+    }
+    .register-btn button{
         width:100%;
         height:36px;
         margin-bottom: 10px;
